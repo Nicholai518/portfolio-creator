@@ -1,13 +1,11 @@
 package main
 
 import (
-"fmt"
+	"fmt"
 )
 
-func main(){
+func main() {
 
-fmt.Println("Hello World");
+	fmt.Println("Portfolio Project")
 
 }
-
-
