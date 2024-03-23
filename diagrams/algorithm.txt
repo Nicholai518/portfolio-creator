@@ -1,0 +1,58 @@
+Create portfolio struct
+Create accumulator
+Create List for totals
+bool answer = true;
+
+
+-- while(!answer) --
+
+Read and store nameOfCrypto
+Read and store amount
+Read and store current price
+
+
+Calculate total: (amount * current price)
+
+Add total to accumulator
+
+
+Store Data:
+1)
+Add to redis sorted set
+Key: nameOfCrypto
+Val: total
+
+2)
+store portfolio in redis hash
+Key: nameOfCrypto
+Val: JSON for portfolio struct
+
+
+-- Do you want to enter another? = answer --
+
+
+Get the reverse order of sorted set as list
+
+Use returned list of cryptos to get the portfolio
+struct from redis hash
+
+
+Calculate %: (portfolio.total % accumulator) x 100
+Round to 2 decimal places
+
+update the % for the portfolio
+
+
+Portfolio struct is complete
+add to list
+iterate through list
+
+Print to console
+
+
+
+Upgrade:
+open file
+print row for each portfolio
+close file
+save to C drive
