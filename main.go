@@ -2,7 +2,9 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
+	"github.com/redis/go-redis/v9"
 	"os"
 	"strconv"
 	"strings"
@@ -34,6 +36,14 @@ func main() {
 
 	//	Create List for totals
 	var answer = true
+
+	// redis connection
+	ctx := context.Background()
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     "localhost:2424",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
 
 	//	-- while(!answer) --
 	for answer {
@@ -95,27 +105,33 @@ func main() {
 		userAnswer, _ := reader.ReadString('\n')
 		userAnswer = strings.TrimSpace(userAnswer)
 
+		//	Store Data:
+		//	1)
+		//	Add to redis sorted set
+		//	Key: nameOfCrypto
+		//	Val: total
+		var nameAndTotal redis.Z
+		nameAndTotal.Member = crypto.name
+		nameAndTotal.Score = crypto.total
+
+		err = rdb.ZAdd(ctx, "totals", nameAndTotal).Err()
+		if err != nil {
+			panic(err)
+		}
+
+		//	2)
+		//	store portfolio in redis hash
+		//	Key: nameOfCrypto
+		//	Val: JSON for portfolio struct
+		//
+
+		//	-- Do you want to enter another? = answer --
 		if strings.Compare(userAnswer, "no") == 0 {
 			answer = false
 		}
 
 	}
 
-	//	Store Data:
-	//	1)
-	//	Add to redis sorted set
-	//	Key: nameOfCrypto
-	//	Val: total
-	//
-	//	2)
-	//	store portfolio in redis hash
-	//	Key: nameOfCrypto
-	//	Val: JSON for portfolio struct
-	//
-	//
-	//	-- Do you want to enter another? = answer --
-	//
-	//
 	//	Get the reverse order of sorted set as list
 	//
 	//	Use returned list of cryptos to get the portfolio
